@@ -1,0 +1,161 @@
+metadata:
+  engine: 4.1
+  version: 0.1
+  author: Carter Pollan
+  contact: carter.pollan@gmail.com
+units:
+  default_stagger: 0
+  default_spread: 'cx'
+  default_splay: 0
+  default_height: 'cx-1'
+  default_width: 'cy-1'
+  default_padding: 'cx'
+  default_autobind: 10
+  kx: cx
+  ky: cy
+  px: kx + 1
+  py: ky + 1
+  ledy: -cx/2 + 3
+points:
+  zones:
+    matrix:
+      key:
+        padding: cy*1.1
+        spread: cx*1.1
+      anchor:
+        rotate: 5
+        shift: [150, -100]
+      columns:
+        pinky:
+        ring:
+          key.splay: -5
+          key.origin: [-12, -19]
+          key.stagger: 12
+        middle:
+          key.stagger: 5
+        index:
+          key.stagger: -6
+        inner:
+          key.stagger: -2
+      rows:
+        bottom:
+        home:
+        top:
+    thumbfan:
+      anchor:
+        ref: matrix_inner_bottom
+        shift: [-7, -19]
+      columns:
+        near:
+        home:
+          key.spread: 21.25
+          key.splay: -28
+          key.origin: [-11.75, -9]
+        far:
+          key.spread: 21.25
+          key.splay: -28
+          key.origin: [-9.5, -9]
+      rows:
+        thumb:
+  rotate: -15
+outlines:
+  keys:
+  - what: rectangle
+    where: true
+    size: [kx, ky]
+  board:
+  - what: polygon
+    operation: stack
+    fillet: 12
+    points:
+    - ref: matrix_pinky_top
+      shift: [-px, py]
+    - ref: matrix_ring_top
+      shift: [0, py]
+    - ref: matrix_index_top
+      shift: [0, py]
+    - ref: matrix_inner_top
+      shift: [2px, py]
+    - ref: matrix_inner_bottom
+      shift: [2px, 0]
+    - ref: thumbfan_far_thumb
+      shift: [px, py]
+    - ref: thumbfan_far_thumb
+      shift: [px, -py]
+    - ref: thumbfan_home_thumb
+      shift: [0, -py]
+    - ref: matrix_pinky_bottom
+      shift: [-px, -py]
+  combo:
+  - name: board
+  - operation: subtract
+    name: keys
+pcbs:
+  boardPcb:
+    outlines:
+      main:
+        outline: board
+    footprints:
+      choc_hotswap:
+        what: choc
+        where: true
+        params:
+          keycaps: true
+          reverse: true
+          hotswap: true
+          from: "{{column_net}}"
+          to: "{{colrow}}"
+      diode:
+        what: diode
+        where: true
+        params:
+          from: "{{colrow}}"
+          to: "{{row_net}}"
+        adjust:
+          shift: [cy/2 -.7, -3]
+          rotate: 90
+      microcontroller:
+        what: promicro
+        params:
+          orientation: "down"
+        where:
+          ref: matrix_inner_top
+          shift: [px, 0]
+          rotate: -90
+      audio:
+        what: trrs
+        params:
+          A: "audioA"
+          B: "audioB"
+          C: "audioC"
+          D: "audioD"
+          reverse: true
+        where:
+          ref: matrix_inner_home
+          shift: [px*1.5, 0]
+          rotate: -90
+      rgbB:
+        what: rgb
+        params:
+          side: "B"
+          din: "din"
+          dout: "dout"
+        where: true
+        adjust:
+          shift: [0, ledy]
+      rgbF:
+        what: rgb
+        params:
+          side: "F"
+          din: "din"
+          dout: "dout"
+        where: true
+        adjust:
+          shift: [0, ledy]
+
+
+cases:
+  baseCase:
+  - what: outline
+    name: board
+    extrude: 1
